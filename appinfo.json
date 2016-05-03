@@ -1,0 +1,19 @@
+{
+  "uuid": "521d5078-cfff-4e9c-81be-3af75e089822",
+  "shortName": "wf",
+  "longName": "wf",
+  "companyName": "MakeAwesomeHappen",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt", "chalk"],
+  "enableMultiJS": true,
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
