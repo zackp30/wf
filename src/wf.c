@@ -1,9 +1,11 @@
 #include <pebble.h>
-#include <jsmn.h>
+#include <yajl/api/yajl_tree.h>
 
 static Window *window;
 static TextLayer *s_text_layer;
 static ScrollLayer *s_scroll_layer;
+
+char errbuf[1024];
 
 static void scroll_layer(char strng[]) {
   Layer *root_layer = window_get_root_layer(window);
@@ -27,16 +29,31 @@ static void scroll_layer(char strng[]) {
 }
 
 static char* parse_joke(char* json) {
-  jsmn_parser parser;
-  jsmntok_t tokens[128];
-  jsmn_init(&parser);
-  jsmn_parse(&parser, json, strlen(json), tokens, 128);
+  /* jsmn_parser parser; */
+  /* jsmntok_t tokens[128]; */
+  /* jsmn_init(&parser); */
+  /* jsmn_parse(&parser, json, strlen(json), tokens, 128); */
 
-  jsmntok_t value = tokens[1];
-  int length = key.end - key.start;
-  char valueStr[length+1];
-  memcpy(valueStr, &json[key.start], length);
-  valueeeStr[]
+  /* jsmntok_t value = tokens[1]; */
+  /* int length = key.end - key.start; */
+  /* char valueStr[length+1]; */
+  /* memcpy(valueStr, &json[key.start], length); */
+  /* valueeeStr[] */
+  yajl_val node = yajl_tree_parse((const char *) json, errbuf, sizeof(errbuf));
+
+  if (node == NULL) {
+    return strcat("err: ", errbuf); // error happened
+  }
+  const char* path[] = {"a"};
+  yajl_val v = yajl_tree_get(node, path, yajl_t_string);
+  if (v) {
+    return YAJL_GET_STRING(v);
+  } else {
+    return "err: Not found";
+  }
+  yajl_tree_free(node);
+  return "what???: Nothing happened? What?";
+
 }
 
 static void window_load(Window *window) {
@@ -64,9 +81,6 @@ static void deinit(void) {
 
 int main(void) {
   init();
-
-  /* APP_LOG(APP_LOG_LEVEL_DEBUG, "Done initializing, pushed window: %p", window); */
-
   app_event_loop();
   deinit();
 }
